@@ -10,8 +10,4 @@ else
   gem "ruby-debug19"
 end
 
-gem 'sunspot_rails'
-gem 'active_reload'
-gem 'sunspot_solr'
-gem 'spree', :path => '../spree'
 gemspec
