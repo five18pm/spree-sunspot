@@ -1,7 +1,9 @@
+require 'sunspot_rails'
+
 module Spree
   class Sunspot::Setup
-    @@filters = nil
     IGNORE_MAX = 1000000000
+    @@filters = nil
 
     @@configuration = nil
     def self.configure(&blk)
