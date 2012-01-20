@@ -14,7 +14,7 @@ module Spree
     end
 
     def filter_for(display_name)
-      @filters.select{|f| f.display_name == display_name }.first
+      @filters.select{|f| f.display_name == display_name or f.display_param == display_name }.first
     end
   end
 end

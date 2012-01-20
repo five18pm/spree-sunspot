@@ -2,7 +2,7 @@ module Spree::Sunspot
   class Search < Spree::Core::Search::Base
     protected
     def get_products_conditions_for(base_scope, query)
-      @search = Sunspot.new_search(Product) do |q|
+      @search = Sunspot.new_search(Spree::Product) do |q|
         q.keywords(query) unless query.blank?
         # There is no option to say don't paginate.
         q.paginate(:page => 1, :per_page => 1000000)

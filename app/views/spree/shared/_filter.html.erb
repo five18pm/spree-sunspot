@@ -1,0 +1,11 @@
+<%= form_tag :action => :filter, :method => :get do %>
+  <% filter_params.each do |filter| %>
+    <% next unless filter.display? %>
+    <fieldset class="filter_fieldset <%= filter.display_name.downcase %>">
+      <%= filter.html_values.each do |hv| %>
+        <%= check_box_tag "s[#{filter.display_param}][]", hv, params[:s][filter.display_param].include?(hv) %>
+        <label class="nowrap"><%= hv %></label>
+      <% end %>
+    </fieldset>
+  <% end %>
+<% end %>
