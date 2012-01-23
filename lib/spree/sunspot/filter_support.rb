@@ -20,7 +20,6 @@ module Spree
         def filter
           params.merge(self.send(:additional_filter_params)) if self.respond_to?(:additional_filter_params)
           @searcher = Spree::Config.searcher_class.new(params)
-          debugger
           @products = @searcher.retrieve_products
           respond_with(@products)
         end
