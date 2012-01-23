@@ -12,30 +12,40 @@ module Spree
           additional_params = options[:additional_params_method]
           class_eval <<-EOV
             include Spree::Sunspot::FilterSupport::InstanceMethods
-            cattr_accessor :additional_filter_params
-
-            @@additional_filter_params = (additional_params.nil? : nil : additional_params)
-
-            helper_method :render_filter
           EOV
         end
       end
 
       module InstanceMethods
-        def render_filter
-          filter_params = Spree::Sunspot::Setup.filters.collect{|filter| filter.parse(params)}
-          render :partial => 'spree/shared/filter', :locals => { :filters => filter_params }
-        end
-
         def filter
-          params.merge(self.send(@@additional_filter_params)) unless @@additional_filter_params.nil?
+          params.merge(self.send(:additional_filter_params)) if self.respond_to?(:additional_filter_params)
           @searcher = Spree::Config.searcher_class.new(params)
+          debugger
           @products = @searcher.retrieve_products
           respond_with(@products)
+        end
+
+        def filter_url_options
+          object = instance_variable_get('@'+controller_name.singularize)
+          if object
+            case controller_name
+            when "products"
+              hash_for_product_path(object)
+            when "taxons"
+              hash_for_taxon_short_path(object)
+            end
+          else
+            {}
+          end
+        end
+      end
+
+      module Helpers
+        def render_filter
+          filter_params = Spree::Sunspot::Setup.filters.collect{|filter| filter.parse(params)}
+          render :partial => 'spree/shared/filter', :locals => { :filter_params => filter_params }
         end
       end
     end
   end
 end
-
-ActionController::Base.include(Spree::Sunspot::FilterSupport)

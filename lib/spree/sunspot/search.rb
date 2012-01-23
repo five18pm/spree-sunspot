@@ -1,6 +1,22 @@
+require 'spree/core/search/base'
+
 module Spree::Sunspot
   class Search < Spree::Core::Search::Base
+    def query
+      @filter_query
+    end
+
     protected
+    def get_base_scope
+      base_scope = @cached_product_group ? @cached_product_group.products.active : Spree::Product.active
+      base_scope = base_scope.in_taxon(taxon) unless taxon.blank?
+      base_scope = get_products_conditions_for(base_scope, keywords) unless filters.empty?
+
+      base_scope = base_scope.on_hand unless Spree::Config[:show_zero_stock_products]
+      base_scope = base_scope.group_by_products_id if @product_group.product_scopes.size > 1
+      base_scope
+    end
+
     def get_products_conditions_for(base_scope, query)
       @search = Sunspot.new_search(Spree::Product) do |q|
         q.keywords(query) unless query.blank?
@@ -8,8 +24,8 @@ module Spree::Sunspot
         q.paginate(:page => 1, :per_page => 1000000)
       end
 
-      filter_query = Spree::Sunspot::Filter::Query.new(@properties[:filters])
-      @search = filter_query.build_search(@search)
+      @filter_query = Spree::Sunspot::Filter::Query.new(@properties[:filters])
+      @search = @filter_query.build_search(@search)
       @search.execute
       if @search.total > 0
         hits = @search.hits.collect{|hit| hit.primary_key.to_i}

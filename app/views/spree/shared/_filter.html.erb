@@ -1,11 +1,24 @@
-<%= form_tag :action => :filter, :method => :get do %>
+<% params[:s] ||= {} %>
+<% url_for_options = { :action => :filter }
+  url_for_options.merge(controller.filter_url_options) if controller.respond_to?(:filter_url_options)
+%>
+<%= form_tag(url_for_options, :method => :get, :id => "filter") do %>
   <% filter_params.each do |filter| %>
     <% next unless filter.display? %>
-    <fieldset class="filter_fieldset <%= filter.display_name.downcase %>">
-      <%= filter.html_values.each do |hv| %>
-        <%= check_box_tag "s[#{filter.display_param}][]", hv, params[:s][filter.display_param].include?(hv) %>
-        <label class="nowrap"><%= hv %></label>
+    <fieldset class="filter" data-field="<%= filter.display_param %>">
+      <legend><%= filter.display_name %></legend>
+      <% params[:s][filter.display_param] ||= [] %>
+      <% filter.html_values.each_with_index do |hv, index| %>
+      <p class="filter_field">
+        <% selected = !(@searcher and @searcher.query and @searcher.query.has_filter?(filter)).nil? %>
+        <% checkbox_id = "#{filter.display_param}_#{index}" %>
+        <label class="filter_field" for="<%= checkbox_id %>">
+          <%= check_box_tag "s[#{filter.display_param}][]", hv[:value], selected, { :id => checkbox_id } %>
+        </label>
+        <label class="filter_value nowrap"><%= hv[:display] %></label>
+      </p>
       <% end %>
     </fieldset>
   <% end %>
+  <%= submit_tag 'Search' %>
 <% end %>

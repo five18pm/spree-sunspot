@@ -1,7 +1,8 @@
 Spree::Sunspot::Engine.routes.draw do
-  get "filter/filter"
+end
 
-  get "filter/search"
-
-  # Add your extension routes here
+Spree::Core::Engine.routes.append do
+  match "/q" => "home#filter"
+  match "/products/q" => "products#filter"
+  match "/:id/q" => "taxons#filter", :constraints => { :id => Regexp.new('(' + Spree::Taxon.all.collect { |b| b.linkname rescue b.permalink }.join('|') + ')') }
 end

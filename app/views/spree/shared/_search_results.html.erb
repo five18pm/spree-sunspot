@@ -1,0 +1,5 @@
+<% if @products.empty? %>
+<%= t(:empty_search_results) %>
+<% else %>
+<%= render :partial => "spree/shared/products", :locals => { :products => products }%>
+<% end %>

@@ -1,4 +1,5 @@
 class Spree::Sunspot::Filter::Filter
+  include ActionView::Helpers::NumberHelper
   attr_accessor :search_param
   attr_accessor :display_name
   attr_accessor :values
@@ -26,19 +27,22 @@ class Spree::Sunspot::Filter::Filter
   end
 
   def html_values
-    case param_type
-    when Range
+    case param_type.to_s
+    when "Range"
       values.collect do |range|
         if range.first == 0
-          "Under #{number_to_currency(range.last)}"
+          { :display => "Under #{number_to_currency(range.last, :precision => 0)}", :value => "#{range.first},#{range.last}" }
         elsif range.last == Spree::Sunspot::Setup::IGNORE_MAX
-          "#{number_to_currency(range.first)}+"
+          { :display => "#{number_to_currency(range.first, :precision => 0)}+", :value => "#{range.first},*" }
         else
-          "#{number_to_currency(range.first)} - #{number_to_currency(range.last)}"
+          { :display => "#{number_to_currency(range.first, :precision => 0)} - #{number_to_currency(range.last, :precision => 0)}", 
+            :value => "#{range.first},#{range.last}" }
         end
       end
     else
-      values
+      values.collect do |value|
+        { :display => value, :value => value }
+      end
     end
   end
 
@@ -169,5 +173,9 @@ class Spree::Sunspot::Filter::Query
 
   def build_url
     @params.collect{|p| p.to_param}.join(SPLIT_CHAR)
+  end
+
+  def has_filter?(filter)
+    @params.select{|p| p.source == filter}.any?
   end
 end

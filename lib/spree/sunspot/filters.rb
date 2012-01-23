@@ -16,5 +16,13 @@ module Spree
     def filter_for(display_name)
       @filters.select{|f| f.display_name == display_name or f.display_param == display_name }.first
     end
+
+    def method_missing(method, *args)
+      if @filters.respond_to?(method)
+        @filters.send(method, *args)
+      else
+        super
+      end
+    end
   end
 end
