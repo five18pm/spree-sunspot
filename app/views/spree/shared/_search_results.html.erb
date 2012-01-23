@@ -1,3 +1,9 @@
+<% content_for :sidebar do %>
+  <div data-hook="homepage_sidebar_navigation">
+    <%= render :partial => 'spree/shared/taxonomies' %>
+  </div>
+<% end %>
+
 <% if @products.empty? %>
 <%= t(:empty_search_results) %>
 <% else %>

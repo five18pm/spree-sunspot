@@ -87,9 +87,9 @@ class Spree::Sunspot::Filter::Condition
   def to_param
     case condition_type
     when GREATER_THAN
-      "#{value.to_s}#{SPLIT_CHAR}*"
+      "#{value.to_i.to_s}#{SPLIT_CHAR}*"
     when BETWEEN
-      "#{value.min.to_s}#{SPLIT_CHAR}#{value.max.to_s}"
+      "#{value.first.to_i.to_s}#{SPLIT_CHAR}#{value.last.to_i.to_s}"
     when EQUAL
       value.to_s
     end
@@ -149,6 +149,10 @@ class Spree::Sunspot::Filter::Param
       super
     end
   end
+
+  def has_filter?(filter, value)
+    @source == filter and @conditions.select{|c| c.to_param == value}.any?
+  end
 end
 
 class Spree::Sunspot::Filter::Query
@@ -175,7 +179,7 @@ class Spree::Sunspot::Filter::Query
     @params.collect{|p| p.to_param}.join(SPLIT_CHAR)
   end
 
-  def has_filter?(filter)
-    @params.select{|p| p.source == filter}.any?
+  def has_filter?(filter, value)
+    @params.select{|p| p.has_filter?(filter, value)}.any?
   end
 end

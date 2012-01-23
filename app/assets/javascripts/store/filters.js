@@ -40,4 +40,10 @@ $(function() {
   $('label.filter_field input').click(function() {
     submit_query();
   });
+
+  $('a.filter_clear_all').click(function() {
+    $('#filter input:checked').removeAttr('checked');
+    setup_label();
+    return false;
+  });
 });

@@ -1,16 +1,15 @@
-<% params[:s] ||= {} %>
 <% url_for_options = { :action => :filter }
   url_for_options.merge(controller.filter_url_options) if controller.respond_to?(:filter_url_options)
 %>
 <%= form_tag(url_for_options, :method => :get, :id => "filter") do %>
+  <%= link_to I18n.t(:clear_all), '#', :class => 'filter_clear_all' %>
   <% filter_params.each do |filter| %>
     <% next unless filter.display? %>
     <fieldset class="filter" data-field="<%= filter.display_param %>">
       <legend><%= filter.display_name %></legend>
-      <% params[:s][filter.display_param] ||= [] %>
       <% filter.html_values.each_with_index do |hv, index| %>
       <p class="filter_field">
-        <% selected = !(@searcher and @searcher.query and @searcher.query.has_filter?(filter)).nil? %>
+        <% selected = (!(@searcher and @searcher.query).nil? and @searcher.query.has_filter?(filter, hv[:value])) %>
         <% checkbox_id = "#{filter.display_param}_#{index}" %>
         <label class="filter_field" for="<%= checkbox_id %>">
           <%= check_box_tag "s[#{filter.display_param}][]", hv[:value], selected, { :id => checkbox_id } %>
@@ -20,5 +19,5 @@
       <% end %>
     </fieldset>
   <% end %>
-  <%= submit_tag 'Search' %>
+  <%= submit_tag I18n.t(:search), :class => 'filter_submit' %>
 <% end %>
