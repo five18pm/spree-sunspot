@@ -6,7 +6,7 @@
   <% filter_params.each do |filter| %>
     <% next unless filter.display? %>
     <fieldset class="filter" data-field="<%= filter.display_param %>">
-      <legend><%= filter.display_name %></legend>
+      <legend class="sub-header"><%= filter.display_name %></legend>
       <% filter.html_values.each_with_index do |hv, index| %>
       <p class="filter_field">
         <% selected = (!(@searcher and @searcher.query).nil? and @searcher.query.has_filter?(filter, hv[:value])) %>
