@@ -17,6 +17,10 @@ module Spree::Sunspot
       Dir.glob(File.join(File.dirname(__FILE__), "../../../app/**/*_decorator*.rb")) do |c|
         Rails.configuration.cache_classes ? require(c) : load(c)
       end
+
+      ActionView::Base.class_eval do
+        include Spree::Sunspot::FilterSupport::Helpers
+      end
     end
 
     config.to_prepare &method(:activate).to_proc
@@ -24,7 +28,6 @@ module Spree::Sunspot
     initializer "spree.sunspot.search_config", :after => "spree.load_preferences" do |app|
       Spree::BaseController.class_eval do
         include(Spree::Sunspot::FilterSupport)
-        helper Spree::Sunspot::FilterSupport::Helpers
         filter_support
       end
 
