@@ -12,6 +12,7 @@ module Spree
           additional_params = options[:additional_params_method]
           class_eval <<-EOV
             include Spree::Sunspot::FilterSupport::InstanceMethods
+            include Spree::Sunspot::FilterSupport::Helpers
             helper_method :render_filter
           EOV
         end
