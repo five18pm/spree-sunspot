@@ -12,6 +12,7 @@ module Spree
           additional_params = options[:additional_params_method]
           class_eval <<-EOV
             include Spree::Sunspot::FilterSupport::InstanceMethods
+            helper_method :render_filter
           EOV
         end
       end
@@ -37,9 +38,7 @@ module Spree
             {}
           end
         end
-      end
 
-      module Helpers
         def render_filter
           filter_params = Spree::Sunspot::Setup.filters.collect{|filter| filter.parse(params)}
           render :partial => 'spree/shared/filter', :locals => { :filter_params => filter_params }
