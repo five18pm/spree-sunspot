@@ -20,7 +20,12 @@ module Spree
 
       module InstanceMethods
         def filter
-          params.merge(self.send(:additional_filter_params)) if self.respond_to?(:additional_filter_params)
+          if params[:id]
+            taxon = Spree::Taxon.find_by_linkname(params[:id])
+            if taxon
+              params.merge!(:taxon => taxon)
+            end
+          end
           @searcher = Spree::Config.searcher_class.new(params)
           @products = @searcher.retrieve_products
           respond_with(@products)
@@ -43,7 +48,8 @@ module Spree
 
       module Helpers
         def render_filter
-          render :partial => 'spree/shared/filter', :locals => { :filter_params => Spree::Sunspot::Setup.filters.filters }
+          filter_params = Spree::Sunspot::Setup.filters.filters
+          render :partial => 'spree/shared/filter', :locals => { :filter_params => filter_params }
         end
       end
     end

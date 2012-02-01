@@ -1,23 +1,27 @@
 require 'sunspot_rails'
+require 'spree/sunspot/filters'
+require 'singleton'
 
 module Spree
-  class Sunspot::Setup
-    IGNORE_MAX = 1000000000
-    @@filters = nil
-
-    @@configuration = nil
-    def self.configure(&blk)
-      @@configuration = blk
-    end
+  module Sunspot
+    class Setup
+      include Singleton
+      IGNORE_MAX = 1000000000
+      @@filters = Spree::Sunspot::Filters.new
   
-    def self.configuration
-      @@configuration
-    end
-
-    def self.filters(&blk)
-      @@filters ||= Spree::Sunspot::Filters.new
-      yield @@filters if block_given?
-      @@filters
+      @@configuration = nil
+      def self.configure(&blk)
+        @@configuration = blk
+      end
+    
+      def self.configuration
+        @@configuration
+      end
+  
+      def self.filters(&blk)
+        yield @@filters if block_given?
+        @@filters
+      end
     end
   end
 end
