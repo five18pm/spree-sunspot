@@ -6,6 +6,19 @@ module Spree::Sunspot
       @filter_query
     end
 
+    def retrieve_products(*args)
+      base_scope = get_base_scope
+      if args
+        args.each do |additional_scope|
+          base_scope = base_scope.send(additional_scope.to_sym)
+        end
+      end
+      @products_scope = @product_group.apply_on(base_scope)
+      curr_page = manage_pagination && keywords ? 1 : page
+
+      @products = @products_scope.includes([:images, :master]).page(curr_page).per(per_page)
+    end
+
     protected
     def get_base_scope
       base_scope = @cached_product_group ? @cached_product_group.products.active : Spree::Product.active
