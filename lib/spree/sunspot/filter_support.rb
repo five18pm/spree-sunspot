@@ -43,8 +43,7 @@ module Spree
 
       module Helpers
         def render_filter
-          filter_params = Spree::Sunspot::Setup.filters.collect{|filter| filter.parse(params)}
-          render :partial => 'spree/shared/filter', :locals => { :filter_params => filter_params }
+          render :partial => 'spree/shared/filter', :locals => { :filter_params => Spree::Sunspot::Setup.filters.filters }
         end
       end
     end
