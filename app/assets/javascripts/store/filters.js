@@ -21,7 +21,7 @@ function submit_query() {
     }
   }).join('|');
 
-  var form = "<form action='" + $('form').attr('action') + "' method='get' accept-charset='UTF-8'><input type='hidden' name='s' value='" + value + "'/></form>";
+  var form = "<form action='" + $('form#filter').attr('action') + "' method='get' accept-charset='UTF-8'><input type='hidden' name='s' value='" + value + "'/></form>";
   var $form = $(form);
   $form.appendTo('body').submit();
 };

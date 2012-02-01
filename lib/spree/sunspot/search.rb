@@ -14,6 +14,7 @@ module Spree::Sunspot
 
       base_scope = base_scope.on_hand unless Spree::Config[:show_zero_stock_products]
       base_scope = base_scope.group_by_products_id if @product_group.product_scopes.size > 1
+      base_scope = base_scope.ascend_by_master_price
       base_scope
     end
 

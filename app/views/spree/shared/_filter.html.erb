@@ -5,6 +5,9 @@
   <%= link_to I18n.t(:clear_all), '#', :class => 'filter_clear_all' %>
   <% filter_params.each do |filter| %>
     <% next unless filter.display? %>
+    <% if lookup_context.find_all("spree/filters/_#{filter.display_param}").any? %>
+      <%= render :partial => "spree/filters/#{filter.display_param}", :locals => { :filter => filter }%>
+    <% else %>
     <fieldset class="filter" data-field="<%= filter.display_param %>">
       <legend class="sub-header"><%= filter.display_name %></legend>
       <% filter.html_values.each_with_index do |hv, index| %>
@@ -18,6 +21,7 @@
       </p>
       <% end %>
     </fieldset>
+    <% end %>
   <% end %>
   <%= submit_tag I18n.t(:search), :class => 'filter_submit' %>
 <% end %>
