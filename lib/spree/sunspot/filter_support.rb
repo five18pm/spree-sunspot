@@ -26,6 +26,10 @@ module Spree
               params.merge!(:taxon => taxon)
             end
           end
+          if params[:s].empty?
+            redirect_to params[:source_url]
+            return
+          end
           @searcher = Spree::Config.searcher_class.new(params)
           @products = @searcher.retrieve_products
           respond_with(@products)

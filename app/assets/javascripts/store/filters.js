@@ -21,7 +21,8 @@ function submit_query() {
     }
   }).join('|');
 
-  var form = "<form action='" + $('form#filter').attr('action') + "' method='get' accept-charset='UTF-8'><input type='hidden' name='s' value='" + value + "'/></form>";
+  var source_url = $('#filter input[name="source_url"]').val();
+  var form = "<form action='" + $('form#filter').attr('action') + "' method='get' accept-charset='UTF-8'><input type='hidden' name='s' value='" + value + "'/><input type='hidden' name='source_url' value='" + source_url + "'/></form>";
   var $form = $(form);
   $form.appendTo('body').submit();
 };
