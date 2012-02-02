@@ -1,4 +1,5 @@
 require 'spree/core/search/base'
+require 'spree/sunspot/filter/filter'
 
 module Spree::Sunspot
   class Search < Spree::Core::Search::Base

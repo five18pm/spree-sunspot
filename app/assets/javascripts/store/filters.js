@@ -33,10 +33,12 @@ $(function() {
   });
   setup_label();
 
+/*
   $('label.filter_value').click(function() {
     $(this).parent().find('input').click();
     setup_label();
   });
+*/
 
   $('label.filter_field input').click(function() {
     submit_query();

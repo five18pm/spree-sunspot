@@ -26,13 +26,23 @@ module Spree
               params.merge!(:taxon => taxon)
             end
           end
-          if params[:s].empty?
+          if search_for_products
+            respond_with(@products)
+          end
+        end
+
+        def search_for_products(scope=nil)
+          if (params[:s].nil? or params[:s].empty?) and !params[:source_url].nil?
             redirect_to params[:source_url]
-            return
+            return false
           end
           @searcher = Spree::Config.searcher_class.new(params)
-          @products = @searcher.retrieve_products
-          respond_with(@products)
+          if scope.nil?
+            @products = @searcher.retrieve_products
+          else
+            @products = @searcher.retrieve_products(scope)
+          end
+          return true
         end
 
         def filter_url_options
@@ -58,4 +68,8 @@ module Spree
       end
     end
   end
+end
+
+ActionController::Base.class_eval do
+  include Spree::Sunspot::FilterSupport
 end

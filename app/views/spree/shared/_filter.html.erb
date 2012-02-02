@@ -1,7 +1,7 @@
-<% url_for_options = { :action => :filter }
-  url_for_options.merge(controller.filter_url_options) if controller.respond_to?(:filter_url_options)
+<% url_options = { "action" => "filter" }.merge(params)
+  url_options.merge!(controller.filter_url_settings) if controller.respond_to?(:filter_url_settings)
 %>
-<%= form_tag(url_for_options, :method => :get, :id => "filter") do %>
+<%= form_tag(url_options, :method => :get, :id => "filter") do %>
   <%= hidden_field_tag 'source_url', params['source_url'] || request.url %>
   <%= link_to I18n.t(:clear_all), '#', :class => 'filter_clear_all' %>
   <% filter_params.each do |filter| %>
