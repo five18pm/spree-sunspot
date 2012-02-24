@@ -45,6 +45,11 @@ module Spree
           return true
         end
 
+        def search_for_similar_products(product, *field_names)
+          @searcher = Spree::Config.searcher_class.new(params)
+          @similar_products = @searcher.similar_products(product, *field_names)
+        end
+
         def filter_url_options
           object = instance_variable_get('@'+controller_name.singularize)
           if object
