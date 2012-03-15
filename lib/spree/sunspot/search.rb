@@ -11,7 +11,14 @@ module Spree::Sunspot
       base_scope = get_base_scope
       if args
         args.each do |additional_scope|
-          base_scope = base_scope.send(additional_scope.to_sym)
+          case additional_scope
+          when Hash
+            scope_method = additional_scope.keys.first
+            scope_values = additional_scope[scope_method]
+            base_scope = base_scope.send(scope_method.to_sym, *scope_values)
+          else
+            base_scope = base_scope.send(additional_scope.to_sym)
+          end
         end
       end
       @products_scope = @product_group.apply_on(base_scope)
